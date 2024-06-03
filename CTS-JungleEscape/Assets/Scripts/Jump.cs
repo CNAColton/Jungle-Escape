@@ -6,24 +6,33 @@ using UnityEngine.SceneManagement;
 
 public class Jump : MonoBehaviour
 {
-    Rigidbody rb;
+    Rigidbody rigidbody;
 
     float jumpForce = 5.7f;
+    float fallMultiplier = 1.5f; 
 
     public bool isGrounded;
+    public float distToGround = 0.15f;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        rigidbody = GetComponent<Rigidbody>();
+        isGrounded = true;
     }
 
     void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, .15f);
-        Debug.DrawRay(transform.position, Vector3.down * .15f, Color.red);
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, distToGround);
+        Debug.DrawRay(transform.position, Vector3.down * distToGround, Color.red);
 
+        //jump movement
         if(Input.GetButtonDown("Jump") && isGrounded){
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rigidbody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+        
+        //increase gravity when falling
+        if (rigidbody.velocity.y < 0){
+            rigidbody.velocity += Physics.gravity * fallMultiplier * Time.deltaTime;
         }
     }
 }

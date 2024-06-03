@@ -6,12 +6,10 @@ public class Movement : MonoBehaviour
 {
     Rigidbody rb;
 
-    float movementSpeed = 3;
+    float speed = 2;
 
     bool canRotateR;
     bool canRotateL;
-
-    public float speed;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,9 +19,29 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        transform.eulerAngles = new Vector3(0, 90 * horizontal, 0);
-        speed = Mathf.Clamp((Input.GetAxisRaw("Vertical") + Mathf.Abs(horizontal)), -1, 1) * movementSpeed * Time.deltaTime;
-        transform.Translate(0, 0, speed);
+        //check for rotate inputs
+        if(Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow)){
+            canRotateR = true;
+        }
+        if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)){
+            canRotateL = true;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        //forward movement
+        var z = Input.GetAxis("Vertical") * speed * Time.deltaTime;
+        transform.Translate(0, 0, z);
+
+        //rotate 90 degrees
+        if(canRotateR){
+            transform.eulerAngles = new Vector3 (0, transform.eulerAngles.y + 90, 0);
+            canRotateR = false;
+        }
+        if(canRotateL){
+            transform.eulerAngles = new Vector3 (0, transform.eulerAngles.y - 90, 0);
+            canRotateL = false;
+        } 
     }
 }

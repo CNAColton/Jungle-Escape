@@ -4,20 +4,40 @@ using UnityEngine;
 
 public class Animate : MonoBehaviour
 {
-    Animator animator;
-    Jump jump;
-    Movement movement;
+    Animator Animator;
+    Jump Jump;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
-        jump = GetComponent<Jump>();
-        movement = GetComponent<Movement>();
+        Animator = GetComponent<Animator>();
+        Jump = GetComponent<Jump>();
     }
 
     void Update()
     {
-        animator.SetBool("grounded", jump.isGrounded);
-        animator.SetFloat("Speed", movement.speed);
+        if(!Jump.isGrounded){
+            Animator.SetBool("isJumping", true);
+            Animator.SetBool("isIdle", false);
+            Animator.SetBool("isWalking", false);
+            Animator.SetBool("isWalkingBackwards", false);
+        }
+
+        if(Jump.isGrounded){
+            Animator.SetBool("isIdle", true);
+            Animator.SetBool("isJumping", false);
+            Animator.SetBool("isWalking", false);
+            Animator.SetBool("isWalkingBackwards", false);
+            if (Input.GetAxisRaw("Vertical") == 1){
+                Animator.SetBool("isWalking", true);
+                Animator.SetBool("isIdle", false);
+                Animator.SetBool("isWalkingBackwards", false);
+            }
+            if(Input.GetAxisRaw("Vertical") == -1){
+                Animator.SetBool("isWalkingBackwards", true);
+                Animator.SetBool("isWalking", false);
+                Animator.SetBool("isIdle", false);
+            }
+        }
     }
 }
+
